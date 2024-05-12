@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <style>
+        body {
+            text-align: center;
+        }
+
+        #myChart {
+            margin: 0 auto;
+            width: 80%; /* Adjust the width as needed */
+        }
+    </style>
+
     <h1>Cognitive Test Result</h1>
     <p>Your score: {{ score }} out of 30</p>
 
@@ -49,7 +60,11 @@
                     y: {
                         beginAtZero: true
                     }
-                }
+                },
+                barThickness: 10, // Set the bar thickness
+                width: 100,
+                height: 100
+
             }
         });
     </script>

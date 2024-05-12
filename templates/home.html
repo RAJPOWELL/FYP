@@ -1,13 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Home</h1>
-    <p>Welcome to the Alzheimer's Prediction App!</p>
-    <p>This app uses machine learning to predict the likelihood of Alzheimer's disease based on MRI scans.</p>
-    {% if 'username' not in session %}
-        <form method="POST">
-            <input type="submit" name="submit_button" value="Sign Up">
-            <input type="submit" name="submit_button" value="Login">
-        </form>
-    {% endif %}
+    <style>
+        /* Custom styling for the image */
+        .background-image {
+            position: absolute;
+            top: 138px; /* Adjust based on your navbar height */
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 70px - 1.7cm); /* Adjust for footer height */
+            background-image: url('static/BG.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+
+    <div class="background-image"></div>
 {% endblock %}

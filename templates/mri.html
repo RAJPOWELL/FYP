@@ -1,14 +1,92 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>MRI</h1>
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" required>
-        <button type="submit">Predict</button>
+<style>
+    /* Custom styling for prediction container */
+    .prediction-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh; /* Adjust the minimum height based on your preference */
+        background-color: #000;
+        color: #fff; /* Set text color to white */
+        padding: 20px; /* Add padding for spacing */
+    }
+
+    /* Styling for the upload label */
+    .upload-label {
+        margin-bottom: 20px;
+        font-size: 18px;
+    }
+
+    /* Styling for file input */
+    #image-upload {
+        display: none; /* Hide the default file input */
+    }
+
+    /* Styling for predict button */
+    .predict-button {
+        padding: 10px 20px;
+        background-color: #2c264efa;
+        color: #fff;
+        border: 2px solid #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .predict-button:hover {
+        background-color: #fff;
+        color: #2c264efa;
+    }
+
+    /* Styling for prediction result */
+    .prediction-result {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .prediction-result p {
+        color: #fff;
+        margin-bottom: 10px; /* Add spacing below paragraphs */
+    }
+
+    .prediction-result img {
+        max-width: 100%;
+        height: auto;
+        border: 2px solid #fff;
+        border-radius: 5px;
+    }
+</style>
+
+<div class="prediction-container">
+    <form method="POST" enctype="multipart/form-data" id="prediction-form">
+        <label for="image-upload" class="upload-label">
+            Choose an MRI Image:
+            <input type="file" id="image-upload" name="image" accept="image/*" required>
+        </label>
+        <button type="submit" class="predict-button">Predict</button>
     </form>
     {% if predicted_class %}
-        <p>Predicted Class: {{ predicted_class }}</p>
-        <p>Confidence: {{ "{:.2f}".format(confidence) }}%</p>
-        <img src="{{ url_for('static', filename=image_path) }}" alt="Prediction Plot">
+        <div class="prediction-result">
+            <p>Predicted Class: {{ predicted_class }}</p>
+            <p>Confidence: {{ "{:.2f}".format(confidence) }}%</p>
+            <img id="image-preview" src="#" alt="Prediction Plot">
+        </div>
     {% endif %}
+</div>
+
+<script>
+    document.getElementById('image-upload').addEventListener('change', function() {
+        var file = this.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('image-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 {% endblock %}

@@ -3,20 +3,57 @@
 <head>
     <title>Alzheimer's Prediction</title>
     <style>
+        /* General Body Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        /* Header Styling */
+        header {
+            background-color: #000000;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        
+        /* Navbar Styling */
         .nav-bar {
-            background-color: #333;
+            background-color: #2c264efa;
             color: #fff;
             padding: 10px;
             text-align: right;
+            margin: 0;
         }
         .nav-bar a {
             color: #fff;
             text-decoration: none;
             margin: 0 10px;
+            transition: transform 0.3s ease; /* Hover Animation */
+        }
+        .nav-bar a:hover {
+            transform: scale(1.1); /* Hover Animation */
+        }
+
+        /* Footer Styling */
+        footer {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 1.7cm;
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1 style="color: #fff; font-weight: bold;">Alzheimer Detection Using Hybrid Approach</h1>
+    </header>
+    
     <div class="nav-bar">
         <a href="/">Home</a>
         <a href="/mri">MRI</a>
@@ -29,8 +66,14 @@
             <a href="/login">Login</a>
         {% endif %}
     </div>
+
     <div>
         {% block content %}{% endblock %}
     </div>
+    
+    <footer>
+        <p>Alzheimer Detection Using Hybrid Approach</p>
+        <p>AIML, BMSIT&M</p>
+    </footer>
 </body>
 </html>
