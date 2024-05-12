@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alzheimer's Prediction</title>
+    <style>
+        .nav-bar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: right;
+        }
+        .nav-bar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <a href="/">Home</a>
+        <a href="/mri">MRI</a>
+        <a href="/cognitive">Cognitive</a>
+        <a href="/about">About</a>
+    </div>
+    <div>
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

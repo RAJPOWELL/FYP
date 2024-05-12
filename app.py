@@ -63,8 +63,12 @@ def plot_image_with_prediction(image_path, predicted_class, confidence, predicti
     plt.tight_layout()
     plt.savefig('static/prediction_plot.png')
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
+@app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/mri', methods=['GET', 'POST'])
+def mri():
     if request.method == 'POST':
         image_file = request.files['image']
         image_path = os.path.join('static', image_file.filename)
@@ -76,9 +80,17 @@ def index():
         # Display prediction with top predicted classes
         plot_image_with_prediction(image_path, predicted_class, confidence, prediction_probabilities)
 
-        return render_template('result.html', predicted_class=predicted_class, confidence=confidence*100, image_path='prediction_plot.png')
+        return render_template('mri.html', predicted_class=predicted_class, confidence=confidence*100, image_path='prediction_plot.png')
 
-    return render_template('index.html')
+    return render_template('mri.html')
+
+@app.route('/cognitive')
+def cognitive():
+    return render_template('cognitive.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

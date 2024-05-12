@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>MRI</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" required>
+        <button type="submit">Predict</button>
+    </form>
+    {% if predicted_class %}
+        <p>Predicted Class: {{ predicted_class }}</p>
+        <p>Confidence: {{ "{:.2f}".format(confidence) }}%</p>
+        <img src="{{ url_for('static', filename=image_path) }}" alt="Prediction Plot">
+    {% endif %}
+{% endblock %}
