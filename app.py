@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
+import sqlite3
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
@@ -7,6 +8,7 @@ import tensorflow_addons as tfa
 import os
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
 
 # Load the trained model
 model_path = "Models/H5/alzheimer_cnn_model"
@@ -63,12 +65,67 @@ def plot_image_with_prediction(image_path, predicted_class, confidence, predicti
     plt.tight_layout()
     plt.savefig('static/prediction_plot.png')
 
-@app.route('/')
+def get_db_connection():
+    conn = sqlite3.connect('alzheimer_detection.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route('/', methods=['GET', 'POST'])
 def home():
+    if request.method == 'POST':
+        if request.form['submit_button'] == 'Sign Up':
+            return redirect(url_for('signup'))
+        elif request.form['submit_button'] == 'Login':
+            return redirect(url_for('login'))
     return render_template('home.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+
+        conn = get_db_connection()
+        c = conn.cursor()
+        c.execute("INSERT INTO User (username, password, email) VALUES (?, ?, ?)", (username, password, email))
+        conn.commit()
+        conn.close()
+
+        session['username'] = username
+        return redirect(url_for('mri'))
+    return render_template('signup.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        conn = get_db_connection()
+        c = conn.cursor()
+        c.execute("SELECT * FROM User WHERE username = ? AND password = ?", (username, password))
+        user = c.fetchone()
+        conn.close()
+
+        if user:
+            session['username'] = username
+            return redirect(url_for('mri'))
+        else:
+            error = 'Invalid username or password'
+            return render_template('login.html', error=error)
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('home'))
 
 @app.route('/mri', methods=['GET', 'POST'])
 def mri():
+    if 'username' not in session:
+        return redirect(url_for('home'))
+
     if request.method == 'POST':
         image_file = request.files['image']
         image_path = os.path.join('static', image_file.filename)
@@ -86,18 +143,24 @@ def mri():
 
 @app.route('/result')
 def result():
+    if 'username' not in session:
+        return redirect(url_for('home'))
+
     predicted_class = request.args.get('predicted_class')
     confidence = float(request.args.get('confidence'))  # Convert to float here
     image_path = request.args.get('image_path')
     return render_template('result.html', predicted_class=predicted_class, confidence=confidence, image_path=image_path)
 
-
 @app.route('/cognitive')
 def cognitive():
+    if 'username' not in session:
+        return redirect(url_for('home'))
     return render_template('cognitive.html')
 
 @app.route('/about')
 def about():
+    if 'username' not in session:
+        return redirect(url_for('home'))
     return render_template('about.html')
 
 if __name__ == '__main__':

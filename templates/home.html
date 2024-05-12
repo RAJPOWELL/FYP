@@ -4,4 +4,10 @@
     <h1>Home</h1>
     <p>Welcome to the Alzheimer's Prediction App!</p>
     <p>This app uses machine learning to predict the likelihood of Alzheimer's disease based on MRI scans.</p>
+    {% if 'username' not in session %}
+        <form method="POST">
+            <input type="submit" name="submit_button" value="Sign Up">
+            <input type="submit" name="submit_button" value="Login">
+        </form>
+    {% endif %}
 {% endblock %}

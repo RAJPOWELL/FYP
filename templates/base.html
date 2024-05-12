@@ -22,6 +22,12 @@
         <a href="/mri">MRI</a>
         <a href="/cognitive">Cognitive</a>
         <a href="/about">About</a>
+        {% if 'username' in session %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/signup">Sign Up</a>
+            <a href="/login">Login</a>
+        {% endif %}
     </div>
     <div>
         {% block content %}{% endblock %}
