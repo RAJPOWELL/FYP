@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
@@ -80,9 +80,17 @@ def mri():
         # Display prediction with top predicted classes
         plot_image_with_prediction(image_path, predicted_class, confidence, prediction_probabilities)
 
-        return render_template('mri.html', predicted_class=predicted_class, confidence=confidence*100, image_path='prediction_plot.png')
+        return redirect(url_for('result', predicted_class=predicted_class, confidence=confidence*100, image_path='prediction_plot.png'))
 
     return render_template('mri.html')
+
+@app.route('/result')
+def result():
+    predicted_class = request.args.get('predicted_class')
+    confidence = float(request.args.get('confidence'))  # Convert to float here
+    image_path = request.args.get('image_path')
+    return render_template('result.html', predicted_class=predicted_class, confidence=confidence, image_path=image_path)
+
 
 @app.route('/cognitive')
 def cognitive():
