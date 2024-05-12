@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alzheimer's Prediction</title>
+</head>
+<body>
+    <h1>Alzheimer's Prediction</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" required>
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if predicted_class %}
+        <h2>Predicted Class: {{ predicted_class }}</h2>
+        <p>Confidence: {{ '%.2f'|format(confidence*100) }}%</p>
+
+        <img src="data:image/png;base64,{{ plot_base64 }}" alt="Prediction Plot">
+    {% endif %}
+</body>
+</html>
