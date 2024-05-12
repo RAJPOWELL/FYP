@@ -1,11 +1,10 @@
-from flask import Flask, request, render_template
+from flask import Flask, render_template, request
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 import matplotlib.pyplot as plt
 import tensorflow_addons as tfa
-import io
-import base64
+import os
 
 app = Flask(__name__)
 
@@ -20,16 +19,16 @@ model = tf.keras.models.load_model(model_path, custom_objects=custom_objects)
 # Define class labels
 CLASSES = ['NonDemented', 'VeryMildDemented', 'MildDemented', 'ModerateDemented']
 
-def preprocess_image(img_data, target_size=(176, 176)):
+def preprocess_image(image_path, target_size=(176, 176)):
     """Preprocesses the input image for model prediction."""
-    img = image.load_img(io.BytesIO(img_data), target_size=target_size)
+    img = image.load_img(image_path, target_size=target_size)
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
     return img_array / 255.0  # Rescale pixel values to [0, 1]
 
-def predict_image_class(img_data, model):
+def predict_image_class(image_path, model):
     """Predicts the class label and confidence for the input image."""
-    processed_img = preprocess_image(img_data)
+    processed_img = preprocess_image(image_path)
     prediction = model.predict(processed_img)[0]  # Get prediction for the single input image
     predicted_class_index = np.argmax(prediction)
     predicted_class = CLASSES[predicted_class_index]
@@ -37,9 +36,9 @@ def predict_image_class(img_data, model):
 
     return predicted_class, confidence, prediction
 
-def plot_image_with_prediction(img_data, predicted_class, confidence, prediction_probabilities):
+def plot_image_with_prediction(image_path, predicted_class, confidence, prediction_probabilities):
     """Plots the input image with the predicted class, confidence, and top predicted classes."""
-    img = image.load_img(io.BytesIO(img_data), target_size=(176, 176))
+    img = image.load_img(image_path, target_size=(176, 176))
     plt.figure(figsize=(12, 6))
 
     # Plot the image
@@ -61,28 +60,23 @@ def plot_image_with_prediction(img_data, predicted_class, confidence, prediction
     plt.xlabel('Probability')
     plt.title('Top Predicted Classes')
 
-    # Convert the plot to a base64-encoded string
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    plot_base64 = base64.b64encode(buf.read()).decode('utf-8')
-
-    return plot_base64
+    plt.tight_layout()
+    plt.savefig('static/prediction_plot.png')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        # Get the uploaded image file
-        img_file = request.files['image']
-        img_data = img_file.read()
+        image_file = request.files['image']
+        image_path = os.path.join('static', image_file.filename)
+        image_file.save(image_path)
 
         # Predict image class and confidence
-        predicted_class, confidence, prediction_probabilities = predict_image_class(img_data, model)
+        predicted_class, confidence, prediction_probabilities = predict_image_class(image_path, model)
 
-        # Generate the plot as a base64-encoded string
-        plot_base64 = plot_image_with_prediction(img_data, predicted_class, confidence, prediction_probabilities)
+        # Display prediction with top predicted classes
+        plot_image_with_prediction(image_path, predicted_class, confidence, prediction_probabilities)
 
-        return render_template('index.html', predicted_class=predicted_class, confidence=confidence, plot_base64=plot_base64)
+        return render_template('result.html', predicted_class=predicted_class, confidence=confidence*100, image_path='prediction_plot.png')
 
     return render_template('index.html')
 
