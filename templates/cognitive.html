@@ -1,6 +1,53 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Cognitive</h1>
-    <p>This page is under construction.</p>
+    <h1>Cognitive Test</h1>
+    <form method="POST">
+        <label for="citizenship">Citizenship:</label>
+        <input type="text" id="citizenship" name="citizenship" required>
+        <br>
+        <label for="dob">DOB:</label>
+        <input type="text" id="dob" name="dob" required>
+        <br>
+        <label for="favorite_animal">Favorite Animal:</label>
+        <input type="text" id="favorite_animal" name="favorite_animal" required>
+        <br>
+        <label for="hometown">Hometown:</label>
+        <input type="text" id="hometown" name="hometown" required>
+        <br>
+        <label for="favorite_color">Favorite Color:</label>
+        <input type="text" id="favorite_color" name="favorite_color" required>
+        <br>
+        <label for="answer_0">Question 1: What is 2+2?</label>
+        <input type="text" id="answer_0" name="answer_0" required>
+        <br>
+        <label for="answer_1">Question 2: What is the capital of France?</label>
+        <input type="text" id="answer_1" name="answer_1" required>
+        <br>
+        <label for="answer_2">Question 3: Who wrote Romeo and Juliet?</label>
+        <input type="text" id="answer_2" name="answer_2" required>
+        <br>
+        <label for="answer_3">Question 4: What is the chemical symbol for gold?</label>
+        <input type="text" id="answer_3" name="answer_3" required>
+        <br>
+        <label for="answer_4">Question 5: How many continents are there in the world?</label>
+        <input type="text" id="answer_4" name="answer_4" required>
+        <br>
+        <label for="answer_5">Question 6: What is the largest ocean on Earth?</label>
+        <input type="text" id="answer_5" name="answer_5" required>
+        <br>
+        <label for="answer_6">Question 7: Who is the current president of the United States?</label>
+        <input type="text" id="answer_6" name="answer_6" required>
+        <br>
+        <label for="answer_7">Question 8: What is the square root of 144?</label>
+        <input type="text" id="answer_7" name="answer_7" required>
+        <br>
+        <label for="answer_8">Question 9: What is the largest planet in our solar system?</label>
+        <input type="text" id="answer_8" name="answer_8" required>
+        <br>
+        <label for="answer_9">Question 10: What is the smallest country in the world by land area?</label>
+        <input type="text" id="answer_9" name="answer_9" required>
+        <br>
+        <input type="submit" value="Submit Answers">
+    </form>
 {% endblock %}

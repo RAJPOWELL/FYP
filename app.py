@@ -6,6 +6,9 @@ from tensorflow.keras.preprocessing import image
 import matplotlib.pyplot as plt
 import tensorflow_addons as tfa
 import os
+import time
+from datetime import datetime
+
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -104,22 +107,75 @@ def login():
 
         conn = get_db_connection()
         c = conn.cursor()
-        c.execute("SELECT * FROM User WHERE username = ? AND password = ?", (username, password))
+        c.execute("SELECT user_id, username FROM User WHERE username = ? AND password = ?", (username, password))
         user = c.fetchone()
         conn.close()
 
         if user:
-            session['username'] = username
-            return redirect(url_for('mri'))
+            session['username'] = user['username']
+            session['user_id'] = user['user_id']
+            return redirect(url_for('cognitive'))
         else:
             error = 'Invalid username or password'
             return render_template('login.html', error=error)
     return render_template('login.html')
 
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect(url_for('home'))
+
+@app.route('/cognitive', methods=['GET', 'POST'])
+def cognitive():
+    if 'username' not in session:
+        return redirect(url_for('home'))
+
+    if request.method == 'POST':
+        # Get form answers
+        citizenship = request.form['citizenship']
+        dob = request.form['dob']
+        favorite_animal = request.form['favorite_animal']
+        hometown = request.form['hometown']
+        favorite_color = request.form['favorite_color']
+
+        # Store answers in the database
+        conn = get_db_connection()
+        c = conn.cursor()
+        c.execute("INSERT INTO CognitiveTest (user_id, citizenship, dob, favorite_animal, hometown, favorite_color, date_taken, score) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (session['user_id'], citizenship, dob, favorite_animal, hometown, favorite_color, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 0))
+        conn.commit()
+        conn.close()
+
+        # Countdown
+        countdown = 10
+        while countdown:
+            print(f"Countdown: {countdown}")
+            countdown -= 1
+            time.sleep(1)
+
+        # Start test
+        score = 0
+        for i in range(1, 11):
+            # Ask question and get answer
+            question = f"Question {i}: What is 2+2?"
+            answer = 4
+
+            # Check if answer is correct
+            if str(request.form.get(f'answer_{i-1}', '')) == str(answer):
+                score += 3
+
+        # Update score in the database
+        conn = get_db_connection()
+        c = conn.cursor()
+        c.execute("UPDATE CognitiveTest SET score = ? WHERE user_id = ? AND test_id = (SELECT MAX(test_id) FROM CognitiveTest WHERE user_id = ?)", (score, session['user_id'], session['user_id']))
+        conn.commit()
+        conn.close()
+
+        # Display score and graph
+        return render_template('cognitive_result.html', score=score)
+
+    return render_template('cognitive.html')
+
 
 @app.route('/mri', methods=['GET', 'POST'])
 def mri():
@@ -150,12 +206,6 @@ def result():
     confidence = float(request.args.get('confidence'))  # Convert to float here
     image_path = request.args.get('image_path')
     return render_template('result.html', predicted_class=predicted_class, confidence=confidence, image_path=image_path)
-
-@app.route('/cognitive')
-def cognitive():
-    if 'username' not in session:
-        return redirect(url_for('home'))
-    return render_template('cognitive.html')
 
 @app.route('/about')
 def about():

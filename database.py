@@ -64,6 +64,11 @@ def create_tables(conn):
     CREATE TABLE IF NOT EXISTS CognitiveTest (
         test_id INTEGER PRIMARY KEY,
         user_id INTEGER,
+        citizenship TEXT,
+        dob TEXT,
+        favorite_animal TEXT,
+        hometown TEXT,
+        favorite_color TEXT,
         date_taken TEXT NOT NULL,
         score INTEGER NOT NULL,
         FOREIGN KEY (user_id) REFERENCES User (user_id)
