@@ -1,7 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>About</h1>
-    <p>This app was developed by [Your Name] as a project for [Your Course/Project Name].</p>
-    <p>The app uses a machine learning model trained on a dataset of MRI scans to predict the likelihood of Alzheimer's disease.</p>
+<style>
+    body{
+        margin-bottom: 1.5cm; /* Adjust margin to prevent overlap */
+    }
+</style>
+    <div style="background-color: #000000; padding: 50px; text-align: center;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h2 style="color: #fcfcfc; font-size: 2.5rem; margin-bottom: 30px;">Dataset Description</h2>
+            <p style="font-size: 1.2rem; line-height: 1.6; color: #ffffff;">
+                The dataset used in this project comprises 6,401 MRI images sourced from an open-access repository. These images represent individuals categorized into four classes: Non-Demented, Mild-Demented, Very Mild-Demented, and Moderate-Demented. Each MRI offers valuable insights into brain structures related to Alzheimer's disease progression, spanning from mild to severe cognitive impairment stages. This dataset enables comprehensive research for developing predictive models aimed at early detection and treatment. Through meticulous analysis, researchers can identify Alzheimer's disease patterns and biomarkers, advancing diagnostic and therapeutic approaches.
+            </p>
+            <h2 style="color: #fdfeff; font-size: 2.5rem; margin-top: 50px; margin-bottom: 30px;">About the Model</h2>
+            <p style="font-size: 1.2rem; line-height: 1.6; color: #ffffff;">
+                The predictive model operates on a dataset of 6,401 MRI images resized to 176x176 pixels, incorporating robustness through image augmentation techniques. It utilizes convolutional and dense blocks for feature extraction and classification, starting with a 3x3 convolutional layer followed by stacked Conv2D layers with Batch-Normalization and Max-Pooling. Dense blocks with decreasing units (512, 128, 64, and 4) and ReLU activation, along with dropout, prevent overfitting. Custom callbacks, including early stopping and validation accuracy monitoring, are used during training with the Adam optimizer. The model's evaluation employs metrics such as accuracy, AUC, and F1 score, with performance assessed on a separate test set using a confusion matrix, balanced accuracy, and Matthew’s correlation coefficient.
+            </p>
+            <h2 style="color: #fdfeff; font-size: 2.5rem; margin-top: 50px; margin-bottom: 30px;">Confusion Matrix of the Model</h2>
+            <img src="static/ConfusionMatrix(CNN).jpeg" alt="Image" style="max-width: 100%; height: auto; margin-top: 50px;">
+        </div>
+    </div>
 {% endblock %}
