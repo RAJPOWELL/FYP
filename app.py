@@ -75,12 +75,16 @@ def get_db_connection():
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    if request.method == 'POST':
-        if request.form['submit_button'] == 'Sign Up':
-            return redirect(url_for('signup'))
-        elif request.form['submit_button'] == 'Login':
-            return redirect(url_for('login'))
-    return render_template('home.html')
+    error = None
+    if 'username' not in session:
+        if request.method == 'POST':
+            if request.form['submit_button'] == 'Sign Up':
+                return redirect(url_for('signup'))
+            elif request.form['submit_button'] == 'Login':
+                return redirect(url_for('login'))
+    else:
+        error = 'User Log in is required'
+    return render_template('home.html', error=error)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -95,8 +99,7 @@ def signup():
         conn.commit()
         conn.close()
 
-        session['username'] = username
-        return redirect(url_for('mri'))
+        return redirect(url_for('login'))
     return render_template('signup.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -114,7 +117,7 @@ def login():
         if user:
             session['username'] = user['username']
             session['user_id'] = user['user_id']
-            return redirect(url_for('cognitive'))
+            return redirect(url_for('home'))
         else:
             error = 'Invalid username or password'
             return render_template('login.html', error=error)
@@ -126,10 +129,30 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('home'))
 
+@app.route('/mri', methods=['GET', 'POST'])
+def mri():
+    if 'username' not in session:
+        return render_template('home.html', error='User Log in is required')
+
+    if request.method == 'POST':
+        image_file = request.files['image']
+        image_path = os.path.join('static', image_file.filename)
+        image_file.save(image_path)
+
+        # Predict image class and confidence
+        predicted_class, confidence, prediction_probabilities = predict_image_class(image_path, model)
+
+        # Display prediction with top predicted classes
+        plot_image_with_prediction(image_path, predicted_class, confidence, prediction_probabilities)
+
+        return redirect(url_for('result', predicted_class=predicted_class, confidence=confidence*100, image_path='prediction_plot.png'))
+
+    return render_template('mri.html')
+
 @app.route('/cognitive', methods=['GET', 'POST'])
 def cognitive():
     if 'username' not in session:
-        return redirect(url_for('home'))
+        return render_template('home.html', error='User Log in is required')
 
     if request.method == 'POST':
         # Get form answers
@@ -175,27 +198,6 @@ def cognitive():
         return render_template('cognitive_result.html', score=score)
 
     return render_template('cognitive.html')
-
-
-@app.route('/mri', methods=['GET', 'POST'])
-def mri():
-    if 'username' not in session:
-        return redirect(url_for('home'))
-
-    if request.method == 'POST':
-        image_file = request.files['image']
-        image_path = os.path.join('static', image_file.filename)
-        image_file.save(image_path)
-
-        # Predict image class and confidence
-        predicted_class, confidence, prediction_probabilities = predict_image_class(image_path, model)
-
-        # Display prediction with top predicted classes
-        plot_image_with_prediction(image_path, predicted_class, confidence, prediction_probabilities)
-
-        return redirect(url_for('result', predicted_class=predicted_class, confidence=confidence*100, image_path='prediction_plot.png'))
-
-    return render_template('mri.html')
 
 @app.route('/result')
 def result():

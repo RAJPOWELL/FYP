@@ -16,4 +16,9 @@
     </style>
 
     <div class="background-image"></div>
+    {% if error %}
+         <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <!-- Rest of the content -->
 {% endblock %}
