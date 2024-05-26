@@ -6,8 +6,7 @@
     <title>Login</title>
     <style>
         body {
-            background-color: black;
-            color: white;
+            background-color: #0d0d0e; /* Light gray background */
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
@@ -16,47 +15,56 @@
             margin: 0;
         }
         .login-container {
-            text-align: center;
+            background-color: rgb(90, 83, 83);
             padding: 30px;
             border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            color: white;
+            border-radius: 20px;
         }
         h1 {
-            color: white;
+            color:rgb(0, 255, 255); /* Dark gray heading */
             margin-bottom: 20px;
+            font-weight: bolder;
+
         }
-        label {
-            display: block;
-            margin-bottom: 10px;
-        }
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
+        input {
+            margin: 10px 0;
             padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid white;
-            border-radius: 4px;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
+            width: 100%;
             box-sizing: border-box;
+            border: 1px solid #000000; /* Light gray border */
+            border-radius: 4px;
+            background-color: #f5f5f5; /* Lighter gray background */
+            color: #ffffff; /* Dark gray text */
+            transition: border-color 0.3s;
+            border-radius: 20px;
+            background-color: black;
+        
         }
         input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            background-color: white;
-            color: black;
+            background-color: rgb(0, 255, 255); /* Primary blue */
+            color: #000000; /* White text */
             font-weight: bold;
+            border: none;
             cursor: pointer;
+            border-radius: 20px;
+            width: auto;
+            width: 25%;
+
         }
         input[type="submit"]:hover {
-            background-color: #f2f2f2;
+            background-color: #ffffff; /* Darker blue on hover */
+            color: black;
+            width: 30%;
         }
-        .error-message {
-            color: red;
-            margin-top: 10px;
+        a{
+            color: rgb(0, 255, 255); /* Primary blue */
+
+        }
+        a:hover{
+            color: white;
         }
     </style>
 </head>
@@ -71,6 +79,7 @@
             <input type="password" id="password" name="password" required>
             <br>
             <input type="submit" value="Login">
+            <p><BR>Don't have an account? <a href="/signup">SignUp here</a>.</p>
         </form>
         {% if error %}
             <p class="error-message">{{ error }}</p>

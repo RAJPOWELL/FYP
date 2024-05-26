@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cognitive Test</title>
+    <style>
+        body {
+            background-color: black;
+            text-align: center;
+            color: white;
+            margin-bottom: 2.5cm; /* Adjust margin to prevent overlap */
+            font-family: Arial, sans-serif;
+        }
+        form {
+            display: inline-block;
+            text-align: left;
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        h3 {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        input[type="submit"]:hover {
+            background-color: #3e8e41;
+        }
+        .question-block {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cognitive Test</h1>
+
+    <form method="POST">
+        {% for i, question in enumerate(mcq_questions) %}
+        <div class="question-block">
+            <h3>{{ question.question }}</h3>
+            {% for j, option in enumerate(question.options) %}
+            <label>
+                <input type="radio" name="question_{{ i }}" value="{{ j }}" required>
+                {{ option }}
+            </label>
+            <br>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    
+        <br>
+        <label for="full_name">What is your Full Name:</label>
+        <input type="text" id="full_name" name="full_name" required>
+        <br>
+        <label for="year_of_birth">Enter your year of Birth:</label>
+        <input type="text" id="year_of_birth" name="year_of_birth" required>
+        <br>
+        <label for="favorite_color">What's your favorite color:</label>
+        <input type="text" id="favorite_color" name="favorite_color" required>
+        <br>
+        <label for="citizenship">Enter your citizenship:</label>
+        <input type="text" id="citizenship" name="citizenship" required>
+        <br>
+    
+        <input type="submit" value="Submit Answers">
+    </form>
+    
+</body>
+</html>
+{% endblock %}

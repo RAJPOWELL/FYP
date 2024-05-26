@@ -1,21 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cognitive Test Result</title>
     <style>
         body {
+            background-color: black;
             text-align: center;
+            color: white;
+            margin-bottom: 2.5cm; /* Adjust margin to prevent overlap */
         }
-
+        h1 {
+            margin-top: 50px;
+        }
+        p {
+            font-size: 24px;
+            margin-top: 30px;
+        }
         #myChart {
             margin: 0 auto;
             width: 80%; /* Adjust the width as needed */
         }
     </style>
-
+</head>
+<body>
     <h1>Cognitive Test Result</h1>
-    <p>Your score: {{ score }} out of 30</p>
+    <p>Your total score is: {{ total_score }}</p>
+    <p>{{ result_message }}</p>
 
-    <h2>Time taken for each question:</h2>
+    <h2>Graph depicting the time consistency for the questions</h2>
     <canvas id="myChart"></canvas>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -24,21 +39,17 @@
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10'],
+                labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6'],
                 datasets: [{
                     label: 'Time Taken (seconds)',
-                    data: [10, 8, 12, 6, 15, 9, 11, 7, 14, 10],
+                    data: [10, 8, 12, 11, 15, 9],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
                         'rgba(255, 206, 86, 0.2)',
                         'rgba(75, 192, 192, 0.2)',
                         'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)'
+                        'rgba(255, 159, 64, 0.2)'
                     ],
                     borderColor: [
                         'rgba(255, 99, 132, 1)',
@@ -46,11 +57,7 @@
                         'rgba(255, 206, 86, 1)',
                         'rgba(75, 192, 192, 1)',
                         'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)'
+                        'rgba(255, 159, 64, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -64,8 +71,9 @@
                 barThickness: 10, // Set the bar thickness
                 width: 100,
                 height: 100
-
             }
         });
     </script>
+</body>
+</html>
 {% endblock %}
